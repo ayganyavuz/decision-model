@@ -2,6 +2,7 @@ from torch.utils.data import DataLoader
 from transformers import AutoTokenizer
 from dataset import DecisionDataset, DecisionCollator
 from decision_model import DecisionModel
+from backbone import DeviceType
 import torch.nn as nn
 import torch.optim as optim
 
@@ -13,7 +14,7 @@ mock = DecisionDataset("mock.jsonl")
 train_dataloader = DataLoader(dataset=mock, batch_size=2, collate_fn=DecisionCollator(tokenizer))
 
 
-dec = DecisionModel("Qwen/Qwen3.5-4B", 256, True, [16, 33])
+dec = DecisionModel("Qwen/Qwen3.5-4B", 256, True, [16, 33], DeviceType.GPU)
 
 it = iter(train_dataloader)
 b1 = next(it)
