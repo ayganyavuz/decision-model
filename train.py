@@ -7,7 +7,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
-BATCH_SIZE = 32
+BATCH_SIZE = 16
 LR = 8e-4
 SAVE_PATH = "decision_model.pt"
 
