@@ -13,14 +13,14 @@ class DecisionModel(nn.Module):
             self.backbone.hidden_size,
             out_vector_size,
             bias=False,
-            dtype=self.backbone.model.dtype,
+            dtype=torch.float32,
             device=self.backbone.model.device,
         )
         self.offsets = offsets # [15, 48]
 
     def forward(self, input_ids: torch.Tensor, attention_mask: torch.Tensor | None = None):
         encoded = self.backbone.encode(input_ids, attention_mask) # (b, 2560)
-        return self.decision_head(encoded) # (b, out_vector_size)
+        return self.decision_head(encoded.float()) # (b, out_vector_size)
 
     def get_binary(self, input_ids: torch.Tensor, attention_mask: torch.Tensor | None = None):
         raw_vector = self.forward(input_ids, attention_mask) # (b, out_vector_size)

@@ -3,7 +3,7 @@ import random
 import string
 
 random.seed(11)
-NUM_OF_SAMPLE = 1000
+NUM_OF_SAMPLE = 50000
 choices_numerical_distance = 10
 num_of_choices = 8
 DATA = []

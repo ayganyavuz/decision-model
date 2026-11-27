@@ -8,7 +8,7 @@ import torch.nn as nn
 import torch.optim as optim
 
 BATCH_SIZE = 32
-LR = 1e-5
+LR = 5e-5
 SAVE_PATH = "decision_model.pt"
 
 tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen3.5-4B")
