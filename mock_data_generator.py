@@ -27,6 +27,8 @@ for ind in range(NUM_OF_SAMPLE):
         if ch_ind == gtrplace:
             choices.append(gtruth)
         dist = random.randint(-1 * choices_numerical_distance, choices_numerical_distance)
+        while dist == 0:
+            dist = random.randint(-1 * choices_numerical_distance, choices_numerical_distance)
         choices.append(gtruth + dist)
 
     DATA.append({
