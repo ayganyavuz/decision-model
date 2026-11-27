@@ -27,11 +27,12 @@ optimizer = optim.AdamW(
 )
 
 loss_F = nn.CrossEntropyLoss()
-
+cnt = 0
 dec.train()
 try:
     for batch in train_dataloader:
         logits, probs, choice = dec.get_choice(batch["input_ids"], 8, batch["attention_mask"])
+        cnt += 1
         # print(f"Choice: {choice}")
         # print(f"Logits: {logits}")
         # print(f"Probs: {probs}")
@@ -39,7 +40,9 @@ try:
         labels = batch["labels"].to(logits.device)
         loss = loss_F(logits.float(), labels)
 
-        print(f"loss val: {loss}")
+        print(f"cnt: {32 * cnt}/50000 \nloss val: {loss}")
+        print("\n\n")
+
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
