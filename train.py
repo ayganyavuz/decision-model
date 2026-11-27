@@ -70,9 +70,9 @@ try:
                 f"step {step}/{total_steps} | samples {step * BATCH_SIZE}/{len(mock)} | "
                 f"loss {run_loss / run_seen:.4f} | acc {run_correct / run_seen:.2%} "
                 f"(chance {1 / n_choices:.1%}) | "
-                f"{run_seen / time_consumed:.2f} examples/sec"
-                f"{backward_sum / backward_sum + forward_sum:.2f} backward time/tot time"
-                f"{forward_sum / backward_sum + forward_sum:.2f} forward time/tot time"
+                f"{run_seen / time_consumed:.2f} examples/sec | "
+                f"{backward_sum / (backward_sum + forward_sum):.2f} backward time/tot time | "
+                f"{forward_sum / (backward_sum + forward_sum):.2f} forward time/tot time"
             )
             backward_sum, forward_sum = 0, 0
             run_loss, run_correct, run_seen = 0.0, 0, 0
