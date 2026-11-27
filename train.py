@@ -56,14 +56,14 @@ try:
         run_seen += labels.size(0)
          
         if step % LOG_EVERY == 0 or step == total_steps:
-            time_consumed = time.time() - step_time()
+            time_consumed = time.time() - step_time
             step_time = time.time()
 
             print(
                 f"step {step}/{total_steps} | samples {step * BATCH_SIZE}/{len(mock)} | "
                 f"loss {run_loss / run_seen:.4f} | acc {run_correct / run_seen:.2%} "
-                f"(chance {1 / n_choices:.1%})"
-                f"{LOG_EVERY * BATCH_SIZE / time_consumed} examples/secon"
+                f"(chance {1 / n_choices:.1%}) | "
+                f"{run_seen / time_consumed:.2f} examples/sec"
             )
             run_loss, run_correct, run_seen = 0.0, 0, 0
 except KeyboardInterrupt:
