@@ -42,21 +42,21 @@ forward_sum = 0
 backward_sum = 0
 try:
     for batch in train_dataloader:
-        forward_time = time.time()
+        torch.cuda.synchronize(); forward_time = time.time()
         n_choices = max(batch["n_choices"])
         logits, probs, choice = dec.get_choice(batch["input_ids"], n_choices, batch["attention_mask"])
         labels = batch["labels"].to(logits.device)
         loss = loss_F(logits.float(), labels)
-        forward_sum += time.time() - forward_time
+        torch.cuda.synchronize(); forward_sum += time.time() - forward_time
         
-        backward_time = time.time()
+        torch.cuda.synchronize(); backward_time = time.time()
         optimizer.zero_grad()
         loss.backward()
         torch.nn.utils.clip_grad_norm_(dec.parameters(), MAX_GRAD_NORM)
         optimizer.step()
         scheduler.step()
         step += 1
-        backward_sum += time.time() - backward_time
+        torch.cuda.synchronize(); backward_sum += time.time() - backward_time
 
         run_loss += loss.item() * labels.size(0)
         run_correct += (choice == labels).sum().item()
