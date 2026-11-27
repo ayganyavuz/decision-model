@@ -6,6 +6,7 @@ from backbone import DeviceType
 import torch
 import torch.nn as nn
 import torch.optim as optim
+import time
 
 BATCH_SIZE = 16
 BACKBONE_LR = 1e-5
@@ -35,6 +36,7 @@ step = 0
 run_loss, run_correct, run_seen = 0.0, 0, 0
 
 dec.train()
+step_time = time.time()
 try:
     for batch in train_dataloader:
         n_choices = max(batch["n_choices"])
@@ -52,12 +54,16 @@ try:
         run_loss += loss.item() * labels.size(0)
         run_correct += (choice == labels).sum().item()
         run_seen += labels.size(0)
-
+         
         if step % LOG_EVERY == 0 or step == total_steps:
+            time_consumed = time.time() - step_time()
+            step_time = time.time()
+
             print(
                 f"step {step}/{total_steps} | samples {step * BATCH_SIZE}/{len(mock)} | "
                 f"loss {run_loss / run_seen:.4f} | acc {run_correct / run_seen:.2%} "
                 f"(chance {1 / n_choices:.1%})"
+                f"{LOG_EVERY * BATCH_SIZE / time_consumed} examples/secon"
             )
             run_loss, run_correct, run_seen = 0.0, 0, 0
 except KeyboardInterrupt:
