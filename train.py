@@ -37,19 +37,26 @@ run_loss, run_correct, run_seen = 0.0, 0, 0
 
 dec.train()
 step_time = time.time()
+
+forward_sum = 0
+backward_sum = 0
 try:
     for batch in train_dataloader:
+        forward_time = time.time()
         n_choices = max(batch["n_choices"])
         logits, probs, choice = dec.get_choice(batch["input_ids"], n_choices, batch["attention_mask"])
         labels = batch["labels"].to(logits.device)
         loss = loss_F(logits.float(), labels)
-
+        forward_sum += time.time() - forward_time
+        
+        backward_time = time.time()
         optimizer.zero_grad()
         loss.backward()
         torch.nn.utils.clip_grad_norm_(dec.parameters(), MAX_GRAD_NORM)
         optimizer.step()
         scheduler.step()
         step += 1
+        backward_sum += time.time() - backward_time
 
         run_loss += loss.item() * labels.size(0)
         run_correct += (choice == labels).sum().item()
@@ -64,7 +71,10 @@ try:
                 f"loss {run_loss / run_seen:.4f} | acc {run_correct / run_seen:.2%} "
                 f"(chance {1 / n_choices:.1%}) | "
                 f"{run_seen / time_consumed:.2f} examples/sec"
+                f"{backward_sum / backward_sum + forward_sum:.2f} backward time/tot time"
+                f"{forward_sum / backward_sum + forward_sum:.2f} forward time/tot time"
             )
+            backward_sum, forward_sum = 0, 0
             run_loss, run_correct, run_seen = 0.0, 0, 0
 except KeyboardInterrupt:
     print("Training interrupted, saving current weights...")
