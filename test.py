@@ -3,7 +3,7 @@ Interactive test interface for DecisionModel.
 
 Usage:
     python test.py                      # untrained head (random answers)
-    python test.py --ckpt model.pt      # load trained weights (state_dict)
+    python test.py --ckpt decision_model.pt     # load trained weights (state_dict)
 
 Enter a query, then the choices one per line; an empty line runs the model.
 """
@@ -56,7 +56,8 @@ def main():
     dec = DecisionModel(MODEL_NAME, OUT_VECTOR_SIZE, False, OFFSETS, device)
 
     if args.ckpt:
-        state = torch.load(args.ckpt, map_location=dec.backbone.model.device)
+        # Load to CPU first; load_state_dict copies into the GPU params in place.
+        state = torch.load(args.ckpt, map_location="cpu")
         missing, unexpected = dec.load_state_dict(state, strict=False)
         print(f"Loaded {args.ckpt} (missing: {len(missing)}, unexpected: {len(unexpected)})")
     else:
